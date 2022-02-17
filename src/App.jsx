@@ -15,8 +15,23 @@ export const App = () => {
 
   const onClickAdd = () => {
     if (todoText === "") return;
-    const newTodos = [...incompleteTodos, todoText];
-    setIncompleteTodos(newTodos);
+    let flag = false;
+    incompleteTodos.forEach((text) => {
+      if (text === todoText) {
+        flag = true;
+      }
+    });
+    completeTodos.forEach((text) => {
+      if (text === todoText) {
+        flag = true;
+      }
+    });
+    if (flag) {
+      alert("文字が重複しています");
+    } else {
+      const newTodos = [...incompleteTodos, todoText];
+      setIncompleteTodos(newTodos);
+    }
     setTodoText("");
   };
 
@@ -44,12 +59,33 @@ export const App = () => {
     setIncompleteTodos(newIncompleteTodos);
   };
 
+  const onClickCompleteDelete = (index) => {
+    const newTodos = [...completeTodos];
+    newTodos.splice(index, 1);
+    setCompleteTodos(newTodos);
+  };
+
+  const onClickAllDelete = () => {
+    const text = prompt("何か入力してください");
+    if (text === "0") {
+      setIncompleteTodos([]);
+      setCompleteTodos([]);
+    } else if (text === "1") {
+      setIncompleteTodos([]);
+    } else if (text === "2") {
+      setCompleteTodos([]);
+    } else {
+      alert("正常な処理がされませんでした");
+    }
+  };
+
   return (
     <>
       <InputTodo
         todoText={todoText}
         onChange={onChangeTodoText}
         onClick={onClickAdd}
+        onClickAllDelete={onClickAllDelete}
       />
 
       <IncompleteTodos
@@ -58,7 +94,11 @@ export const App = () => {
         onClickDelete={onClickDelete}
       />
 
-      <CompleteTodos todos={completeTodos} onClickBack={onClickBack} />
+      <CompleteTodos
+        todos={completeTodos}
+        onClickBack={onClickBack}
+        onClickCompleteDelete={onClickCompleteDelete}
+      />
     </>
   );
 };
